@@ -4,19 +4,68 @@
 <form class="buttons" method="post">
     <h3>Enter The Chat Room</h3>
     <div>
-        <label for="">Name:</label>
-        <input type="text" placeholder="Pick a Name" name="name" value="{{name}}">
+        <label for="name">Name:</label>
+        <input type="text" placeholder="Pick a Name" name="name" value="{{name}}" id="nameform">
     </div>
     <div class="join">
         <input type="text" placeholder="Room Code" name="code" value="{{code}}">
         <button type="submit" name="join">join a Room</button>
     </div>
-    <button type="submit" name="create" class="create-btn">Create a Room</button>
+    <div>
+        <button type="submit" name="create" class="create-btn">Create a Room</button>
+        <label for="private">Create Private Room:</label>
+        <input type="checkbox" name="private" id="private">
+    </div>
+
     {% if error %}
     <ul>
         <li>{{error}}</li>
     </ul>
     {% endif %}
 </form>
+
+<div class="rooms">
+    {% for room in rooms %}
+    {% if rooms[room]["private"] == "no" %}
+    <div class="room">
+        <button onclick="connectRoom()">Join Room</button>
+        <h3>Room Code: {{room}}</h3>
+        <h4>People in the chat</h4>
+        <ul>
+            {% for names in rooms[room]["names"] %}
+            <li>{{names}}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+
+<script type="text/javascript">
+    /*
+    function connectRoom() {
+        let name = document.getElementById("nameform");
+        let text;
+        if (name == "") {
+            name = prompt("Enter your nickname: ");
+            if (name == null || name == "") {
+                text = "User cancelled"
+            }
+            else {
+                const data = {
+                    name: name,
+
+                }
+                fetch('/submit-form', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                })
+            }
+        }
+    }
+    */
+
+</script>
 
 {% endblock %}
