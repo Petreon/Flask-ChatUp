@@ -7,3 +7,6 @@ this project is up on: https://flask-chatup.onrender.com
 - $ pip3 install -r requirements.txt
 ### Run the server
 - $ python3 main.py
+
+### Gunicorn deploying
+- $ gunicorn --worker-class eventlet -w 1 main:app
