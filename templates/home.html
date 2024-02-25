@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<form class="buttons" method="post">
+<form class="buttons" method="post" id="buttons">
     <h3>Enter The Chat Room</h3>
     <div>
         <label for="name">Name:</label>
@@ -28,8 +28,8 @@
     {% for room in rooms %}
     {% if rooms[room]["private"] == "no" %}
     <div class="room">
-        <button onclick="connectRoom()">Join Room</button>
-        <h3>Room Code: {{room}}</h3>
+        <button id="joinbtn" onclick="connectRoom()">Join Room</button>
+        <h3 id="roomcode">Room Code: {{room}}</h3>
         <h4>People in the chat</h4>
         <ul>
             {% for names in rooms[room]["names"] %}
@@ -42,29 +42,111 @@
 </div>
 
 <script type="text/javascript">
-    /*
+
+
+
     function connectRoom() {
-        let name = document.getElementById("nameform");
+        let name = document.getElementById("nameform").value;
         let text;
-        if (name == "") {
+        //console.log(name)
+        if (name == "" || name == null) {
             name = prompt("Enter your nickname: ");
             if (name == null || name == "") {
                 text = "User cancelled"
             }
             else {
+                const elements = event.target.closest('.room')
+                const h3code = elements.querySelector('h3').textContent;
+                // resolver essa parte amanha
+                //console.log(h3code.length)
+                let codess = "";
+                for (let i = 0; i < h3code.length; i++) {
+                    if (i > 10) {
+                        codess += h3code[i]
+                    }
+                }
+                //console.log(codess)
                 const data = {
                     name: name,
-
+                    code: codess
                 }
-                fetch('/submit-form', {
-                    method: 'POST',
+
+                fetch('/', {
+                    method: 'PATCH',
+                    redirect: 'follow',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data),
+                }).catch((response) => {
+                    console.log(response)
+                    console.log(response.data)
+
+                }).then(response => {
+                    if (response.status != 200) {
+                        response.json().then((data) => {
+
+                            const span_error = document.createElement("span")
+                            span_error.textContent = data["data"]
+                            span_error.style.color = "red"
+                            const forming = document.getElementById("buttons")
+                            forming.appendChild(span_error)
+
+                        })
+                    } else {
+                        window.location.href = location.href + "room"
+                    }
+
                 })
             }
+
+        } else {
+            //if the name is inputed in the name form
+
+
+            const elements = event.target.closest('.room')
+            const h3code = elements.querySelector('h3').textContent;
+            // resolver essa parte amanha
+            //console.log(h3code.length)
+            let codess = "";
+            for (let i = 0; i < h3code.length; i++) {
+                if (i > 10) {
+                    codess += h3code[i]
+                }
+            }
+
+            const data = {
+                name: name,
+                code: codess
+            }
+            //console.log(codess)
+
+            fetch('/', {
+                method: 'PATCH',
+                redirect: 'follow',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            }).catch((response) => {
+                console.log(response)
+                console.log(response.data)
+
+            }).then(response => {
+                if (response.status != 200) {
+                    response.json().then((data) => {
+
+                        const span_error = document.createElement("span")
+                        span_error.textContent = data["data"]
+                        span_error.style.color = "red"
+                        const forming = document.getElementById("buttons")
+                        forming.appendChild(span_error)
+
+                    })
+                } else {
+                    window.location.href = location.href + "room"
+                }
+
+            })
         }
     }
-    */
+
 
 </script>
 

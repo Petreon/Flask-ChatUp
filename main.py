@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, make_response, jsonify
 from flask_socketio import join_room, leave_room, send, SocketIO
 import random
 from string import ascii_uppercase
@@ -21,7 +21,7 @@ def generate_unique_code(length):
     
     return code
 
-@app.route("/", methods=["POST","GET"])
+@app.route("/", methods=["POST","GET","PATCH"])
 def home():
 
     session.clear()
@@ -58,7 +58,29 @@ def home():
         session["room"] = room
         session["name"] = name
         return redirect(url_for("room"))
+    
+    if request.method == "PATCH":
+        data = request.get_json()
+        print(data)
+        name = data["name"]
+        code = data["code"]
 
+        if not name or name == "null":
+            return make_response(jsonify({"data": "Error in the name try again"}),404)
+        if code not in rooms:
+            #print("uhsaudm")
+            return make_response(jsonify({"data": "Error joining the Room refresh the page"}),404)
+
+
+        room = code
+
+        session["room"] = room
+        session["name"] = name
+
+        return make_response(jsonify({"data": "joining the room"}),200)
+
+
+        print(data)
 
     ## add the rooms created to the base file
     return render_template("home.html", rooms=rooms)
@@ -121,6 +143,7 @@ def disconnect():
 
     if room in rooms:
         rooms[room]["members"] -= 1
+        rooms[room]["names"].remove(name)
         if rooms[room]["members"] <= 0:
             ## deleting the room if anyone in
             del rooms[room]
@@ -129,4 +152,4 @@ def disconnect():
     #print(f"{name} has left the room {room}" )
 
 if __name__ == "__main__":
-    socketio.run(app, debug=True, host="0.0.0.0")
+    socketio.run(app, debug=False, host="0.0.0.0")

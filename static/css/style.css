@@ -113,3 +113,8 @@ form {
     flex: 2;
     justify-content: left;
 }
+
+#joinbtn {
+    margin-left: 25%;
+    margin-top: 5px;
+}
