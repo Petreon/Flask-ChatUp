@@ -1,5 +1,6 @@
 # Flask-ChatUp
 Creating an Flask web chat with socketio, all the javascript code is into HTML because is only testing some features
+this project is up on: https://flask-chatup.onrender.com
 
 ## Initializing the server
 - Clone the repository create an venv and install the dependencies
